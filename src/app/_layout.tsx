@@ -9,11 +9,10 @@ export default function layout  () {
         }}
         >
             <Stack.Screen name="index" options={{ title:'index', 
-        
-                
+        headerShown:false  
             }}    />
             <Stack.Screen name="signup" options={{ title:'signup'   }} />
-            <Stack.Screen name="entradas" options={{ title:'entradas',     headerShown:false   }} />
+            <Stack.Screen name="conta" options={{     headerShown:false   }} />
 
         </Stack>
     )
