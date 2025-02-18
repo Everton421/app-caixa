@@ -1,42 +1,52 @@
-import { FlatList, StyleSheet, Text, View } from "react-native"
+import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useState } from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
-
+import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Header } from "./components/header";
+import { useLocalSearchParams } from "expo-router";
+
+ 
+ 
 export default   function entradas   (){ 
+
+    const data = useLocalSearchParams()
 
     const [ configListItems ] = useState(
         [
             { 
                 sequencia:1,
                 title:'entradas',
-                icon:  <AntDesign name="arrowdown" size={24} color="black" />
+                icon: <MaterialCommunityIcons name="arrow-down-thick" size={34} color="black" />
             },
             { 
                 sequencia:1,
                 title:'saidas',
-                icon:  <AntDesign name="arrowup" size={24} color="black" /> 
+                icon:    <MaterialCommunityIcons name="arrow-up-thick" size={34} color="black" />
             },
             { 
                 sequencia:1,
                 title:'movimentações',
-                icon: <MaterialCommunityIcons name="bank-transfer" size={30} color="black" />
-            }
+                icon: <MaterialCommunityIcons name="bank-transfer" size={34} color="black" />
+            },
+            
         ])
+type icon ={ icon:string, title:string }
 
-const renderItensConfiList = (item)=>{
+const renderItensConfiList = (item:icon)=>{
      return(
-        <View style={{  width:110, height:100, margin:2,   borderRadius:35 ,   alignItems:"center", justifyContent:"center" }}>
+        <TouchableOpacity
+              style={{  width:130, height:130,   borderRadius:35 ,   alignItems:"center", justifyContent:"center" }}>
 
-        <View style={{  width:70, height:70,    borderRadius:35 , backgroundColor:'red', alignItems:"center", justifyContent:"center" }}>
-              { item.icon }  
+            <View style={{  width:70, height:70,    borderRadius:35 , backgroundColor:'#FFF', alignItems:"center", justifyContent:"center" }}>
+                { item.icon }  
 
-        </View>
-        <Text style={{ fontWeight:'bold', color:'#FFF'}}> { item.title }  </Text>
+            </View>
+            <Text style={{ fontWeight:'bold', color:'#FFF'}}> { item.title }  </Text>
 
-        </View>
+        </TouchableOpacity>
 
      )
 }
@@ -61,21 +71,30 @@ const renderItensTransactions = (item)=>{
 }
     return(
       <View style={ styles.container}>
-             
+
+           <Header arrowColor="#000" background="#FFF"  /> 
+
+<Button
+title="press"
+onPress={()=>{ console.log(data) }}
+/>
              <View style={ styles.headerBank }>
                 <View>
-                    <FontAwesome name="bank" size={24} color="black" />
-                    <Text>
+                    <FontAwesome name="bank" size={24} color="#FFF" />
+                    <Text style={{ fontWeight:'bold', color:'#FFF'}}>
                         conta bancaria
                     </Text>
                  </View>   
             </View>
 
-            <View style={{ alignItems:"center" ,justifyContent:"center"}} >
+            <View style={{ alignItems:"center" ,justifyContent:"center", marginTop:10, flexDirection:"row"}} >
                 <Text style={{ fontWeight:"bold", color:'#FFF', fontSize: 25}}> R$15,650.00   </Text>
+                <Entypo name="eye-with-line" size={30} color="white" />
+                <Entypo name="eye" size={30} color="white" />
+
             </View>
         
-        <View style={{width:'100%', alignItems:"center", marginTop:15 }}>     
+        <View style={{  alignItems:'center', justifyContent:"center",  marginTop:15  }}>     
                 <FlatList
                     horizontal={true}
                 data={configListItems}        
@@ -110,6 +129,5 @@ export const styles = StyleSheet.create({
         justifyContent:"space-between",
         margin:15,
         padding:3,
-        backgroundColor:'red'
     }
 })

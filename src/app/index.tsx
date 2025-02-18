@@ -8,6 +8,8 @@ export default function Home(){
        
         
             <TouchableOpacity style={ styles.button} onPress={()=>  router.navigate('/entradas')}>
+                <Link href={{ pathname: '/entradas', params:{ codigo:2}}}  >
+                </Link>
                 <Text style={styles.title}> criar conta </Text>
             </TouchableOpacity>
 
