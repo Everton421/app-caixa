@@ -3,6 +3,7 @@ import { Link, router } from "expo-router"
 import { useState } from "react";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { RenderItemConta } from "./components/itemConta";
 
 export default function Home(){
 
@@ -72,31 +73,8 @@ export default function Home(){
         ]);
         const [ contaB, setContaB] = useState<conta>({ nome:'santander'})
             
-     
     
-    function navegar(  saldo:number, movimentos:string, conta:string ){
-        router.push({pathname:'/conta', params:{ saldo, movimentos, conta}})
-    }
-    
-        const renderItem = (item)=>{
-            return(
-                <TouchableOpacity 
-                style={{   justifyContent:"space-between", padding:10,  flexDirection:"row",   margin:7, backgroundColor:'#3A7DFF',  borderRadius:10, elevation:3}}
-                onPress={ ()=>navegar(   item.saldo,  JSON.stringify(item.movimentos),  JSON.stringify(item.conta)  ) }
-                >   
-
-                    <FontAwesome name="bank" size={24} color="#FFF" />
-                    
-                    <Text style={styles.title}>
-                        {item.conta}
-                    </Text>
-                    <Text style={styles.title}>
-                        {Number( item.saldo ).toFixed(2)}
-                    </Text>
-                
-                </TouchableOpacity>
-                )
-            }
+       
 
         return (
         <View style={styles.container}>
@@ -129,7 +107,7 @@ export default function Home(){
             <View style={{ width:'90%',  alignSelf:"center"}}>
                 <FlatList
                 data={data}
-                        renderItem={({item})=>  renderItem(item)}
+                        renderItem={({item})=>  RenderItemConta(item)}
                 />
             </View>
            

@@ -9,9 +9,9 @@ import { Header } from "./components/header";
 import { useLocalSearchParams } from "expo-router";
  
  
-export default   function conta   (   ){ 
+export default   function Conta   (   ){ 
 
-    const params = useLocalSearchParams()
+    const params:any = useLocalSearchParams()
     const [ movimentos , setMovmentos]= useState([])
     const [ saldo , setSaldo] = useState<Number>(); 
     const  [ conta , setConta] = useState();
@@ -96,11 +96,11 @@ const renderItensTransactions = (item)=>{
     return(
       <View style={ styles.container}>
            
-           <Header arrowColor="#000" background="#FFF"  /> 
+           <Header   arrowColor="#000" background="#FFF"    /> 
 
            <View>
              <View style={ styles.headerBank }>
-                    <FontAwesome name="bank" size={24} color="#FFF" />
+                    <FontAwesome  name="bank" size={24} color="#FFF" />
                     
                     { conta ? 
                     (
