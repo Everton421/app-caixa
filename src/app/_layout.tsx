@@ -13,7 +13,7 @@ export default function layout  () {
             }}    />
             <Stack.Screen name="signup" options={{ title:'signup'   }} />
             <Stack.Screen name="conta" options={{     headerShown:false   }} />
-
-        </Stack>
+            <Stack.Screen name="entrada" options={{     headerShown:false   }} />
+            </Stack>
     )
 }

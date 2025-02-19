@@ -1,4 +1,5 @@
-import Conta from "@/app/conta"
+
+ import Conta from "@/app/conta"
 import { render } from "@testing-library/react-native"
 
 describe('testando componente <Conta/>',()=>{
@@ -6,4 +7,3 @@ describe('testando componente <Conta/>',()=>{
         render(<Conta/>)
     })
 })
-

@@ -1,4 +1,4 @@
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useState } from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -6,7 +6,9 @@ import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Header } from "./components/header";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { db } from "./database/firebaseConfig";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
  
  
 export default   function Conta   (   ){ 
@@ -18,18 +20,47 @@ export default   function Conta   (   ){
 
     const [ verSaldo, setVerSaldo ] = useState<boolean>(false);
 
+    const [ loading, setLoading ] = useState(false);
+
+    async function queryMoviments(idConta:string){
+                try{
+                setLoading(true)
+
+            const q = query( collection( db,'movimentos'), where("conta", "==", idConta ))
+                // const q = collection(db , 'movimentos')
+                const querySnapshot = await getDocs(q);
+                let aux =[]
+                querySnapshot.forEach((snapshot)=>{
+                    console.log(snapshot.data())
+                    aux.push(snapshot.data())
+                })
+                if( aux.length > 0 ){
+                    setMovmentos(aux)
+                }
+                setLoading(false)
+
+            }catch(e){
+                setLoading(false)
+            } finally{
+                setLoading(false)
+
+            }
+    }   
+
     useEffect(
         ()=>{
-            if(params.movimentos){
-                setMovmentos( JSON.parse(params.movimentos) );
-            }   
-            if(params.saldo){
-                setSaldo(Number(params.saldo))
-            } 
-            
-             if( params.conta){
-                 setConta(   JSON.parse(params.conta as string ) )
-             }
+          
+            if( params.id){
+                    queryMoviments(params.id)
+                if(params.saldo){
+                    setSaldo(Number(params.saldo))
+                } 
+                
+                if( params.conta){
+                    setConta(   JSON.parse(params.conta as string ) )
+                }
+            }
+
         },[]
     )
    
@@ -39,7 +70,8 @@ export default   function Conta   (   ){
             { 
                 sequencia:1,
                 title:'entradas',
-                icon: <MaterialCommunityIcons name="arrow-down-thick" size={34} color="#7F8082" />
+                icon: <MaterialCommunityIcons name="arrow-down-thick" size={34} color="#7F8082" />,
+                to:'entrada'
             },
             { 
                 sequencia:1,
@@ -58,7 +90,9 @@ type icon ={ icon:string, title:string }
 const renderItensConfiList = (item:icon)=>{
      return(
         <TouchableOpacity
-              style={{  width:130, height:130,   borderRadius:35 ,   alignItems:"center", justifyContent:"center"  }}>
+              style={{  width:130, height:130,   borderRadius:35 ,   alignItems:"center", justifyContent:"center"  }}
+              onPress={()=> router.push("/entrada"  )}
+              >
                 <View style={{  width:70, height:70,    borderRadius:35 , backgroundColor:'#FFF', alignItems:"center", justifyContent:"center" }}>
                     { item.icon }  
                 </View>
@@ -84,9 +118,6 @@ const renderItensTransactions = (item)=>{
                   (   <View style={{ backgroundColor:'#FFF', borderRadius:5}}  >
                     <Entypo name="arrow-bold-down" size={24} color="red" />
                    </View> ) }
-               
-
-                   
 
         </View>
     )
@@ -95,9 +126,7 @@ const renderItensTransactions = (item)=>{
 
     return(
       <View style={ styles.container}>
-           
            <Header   arrowColor="#000" background="#FFF"    /> 
-
            <View>
              <View style={ styles.headerBank }>
                     <FontAwesome  name="bank" size={24} color="#FFF" />
@@ -116,7 +145,7 @@ const renderItensTransactions = (item)=>{
                 </View>
                    
             </View>
-
+ 
             <View style={{ alignItems:"center" ,justifyContent:"center",    marginTop:10, flexDirection:"row"}} >
                
                 {
@@ -155,10 +184,23 @@ const renderItensTransactions = (item)=>{
                     movimentações
                 </Text>
             
-                    <FlatList
-                        data={movimentos || []}        
-                        renderItem={({item})=>  renderItensTransactions(item)    }
-                        />
+                    {
+                       loading  ?
+                        (
+                          <ActivityIndicator size={22}/>
+                        ):(
+                             
+                                movimentos.length > 0 ?
+                                    <FlatList
+                                    data={movimentos}        
+                                    renderItem={({item})=>  renderItensTransactions(item)    }
+                                    />
+                                    :
+                                    <Text style={{textAlign:"center", margin:5}}> nenhum movimento registrado nesta conta!</Text>
+                             
+                        )
+                    }
+                   
          
             </View>
         </View>

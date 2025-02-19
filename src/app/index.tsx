@@ -1,80 +1,43 @@
 import { StyleSheet , View , Text, StatusBar, TouchableOpacity, FlatList, TextInput } from "react-native"
 import { Link, router } from "expo-router"
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { RenderItemConta } from "./components/itemConta";
+import { collection, doc, getDocs } from "firebase/firestore";
+import { db } from "./database/firebaseConfig";
+import { ModalConta } from "./components/modalNovaConta";
+
 
 export default function Home(){
 
-    const [data , setData] = useState( [
-        {
-            conta:'itau',
-            saldo:140,
-            movimentos:
-            [
-                { 
-                    tipo: 'e',
-                    valor: 120
-                },
-                { 
-                    tipo: 'e',
-                    valor: 120
-                },
-                { 
-                    tipo: 's',
-                    valor: 100
-                }     
-            ]
-        },
-        {
-            conta:'caixa',
-            saldo:240,
-            movimentos:
-            [
-                { 
-                    tipo: 'e',
-                    valor: 120
-                },
-                { 
-                    tipo: 'e',
-                    valor: 120
-                }    
-            ]
-        },
-        
-    ]);
+    const [data , setData] = useState( []);
+    const [visible , setVisible] = useState(false);
     
-    type movimentos={
-        tipo:string,
-        valor:number
-    }
-    type conta={
-        nome: string
-    }
-     const [ movFict, setMovFict] = useState<movimentos[]>([
-            { 
-                tipo: 'e',
-                valor: 120
-            },
-            { 
-                tipo: 'e',
-                valor: 120
-            },
-            { 
-                tipo: 's',
-                valor: 120
-            },
-            { 
-                tipo: 's',
-                valor: 120
-            },
-               
-        ]);
-        const [ contaB, setContaB] = useState<conta>({ nome:'santander'})
-            
+    async function filter  () {
+        const querySnapshot = await getDocs(collection(db, "contas"))
+
+        let aux =[]
+            querySnapshot.forEach((snapshot)=>{
+                snapshot.id
+                let obj = snapshot.data()
+                obj.id = snapshot.id
+                aux.push( obj )
+            })
+
+            if( aux.length > 0 ){
+             // console.log(aux)
+                setData(aux)
+            }
+        }  
     
-       
+    useEffect(
+        ()=>{
+            filter();
+        },[])
+
+ 
+   
 
         return (
         <View style={styles.container}>
@@ -89,15 +52,17 @@ export default function Home(){
                     </View>
 
                     <View style={{ alignItems:"center", justifyContent:"center" , height:'100%'}}>
-                     <TouchableOpacity style={{ backgroundColor:'#FFF', width:'80%', borderRadius:10, padding:5, alignItems:"center", elevation:3, }}  >
+                     <TouchableOpacity style={{ backgroundColor:'#FFF', width:'80%', borderRadius:10, padding:5, alignItems:"center", elevation:3, }}  
+                     onPress={()=> setVisible(true) }
+                     >
                        <Text style={{ color:'#7F8082', fontSize:20, fontWeight:'bold'}}>
                             Cadastrar Conta
                         </Text>
                       </TouchableOpacity>
                      </View>
-               
                </View>
 
+                <ModalConta  setVisible={setVisible} visible={visible}/>
                   <TextInput
                      style={{ backgroundColor:'#EDEEF2', width:'80%', borderRadius:10 , marginTop:20, alignSelf:"center", elevation:5}}
                      placeholder="pesquisar"
@@ -110,8 +75,6 @@ export default function Home(){
                         renderItem={({item})=>  RenderItemConta(item)}
                 />
             </View>
-           
-            
         </View>
     )
 }

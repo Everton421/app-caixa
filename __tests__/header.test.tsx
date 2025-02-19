@@ -1,4 +1,4 @@
-import { Header } from "@/app/components/header"
+ import { Header } from "@/app/components/header"
 import { render } from "@testing-library/react-native"
 
 describe('testing header component',()=>{
@@ -7,4 +7,4 @@ describe('testing header component',()=>{
 
         const { getByTestId   } = render(<Header arrowColor="#FFF" background="blue" /> )
     })  
-})
+}) 
